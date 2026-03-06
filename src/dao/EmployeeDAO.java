@@ -35,7 +35,7 @@ public class EmployeeDAO {
     }
 
     public boolean existsById(int id) {
-        return findById(id) != null;
+        return this.findById(id) != null;
     }
 
     public boolean update(Employee updated) {

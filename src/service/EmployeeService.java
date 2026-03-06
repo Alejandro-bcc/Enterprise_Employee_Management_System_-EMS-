@@ -14,7 +14,6 @@ public class EmployeeService {
     }
 
     // Methods
-
     public boolean add(Employee e) {
         if (this.dao.existsById(e.getId())) {
             return false;

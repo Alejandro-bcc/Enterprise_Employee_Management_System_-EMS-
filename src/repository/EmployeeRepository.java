@@ -10,7 +10,7 @@ public class EmployeeRepository {
 
     // Constructor
     private EmployeeRepository() {
-        this.employees = new ArrayList<>();
+        this.employees = new ArrayList<Employee>();
     }
 
     // Methods
