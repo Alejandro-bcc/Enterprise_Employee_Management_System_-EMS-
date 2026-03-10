@@ -43,8 +43,7 @@ public class EmployeeDAO {
 
         for (int i = 0; i < list.size(); i++) {
             Employee e = list.get(i);
-            if (e.getFirstName().toLowerCase().contains(q) ||
-                    e.getLastName().toLowerCase().contains(q))
+            if (e.getFullName().toLowerCase().contains(q))
                 arr.add(e);
         }
         return arr;
