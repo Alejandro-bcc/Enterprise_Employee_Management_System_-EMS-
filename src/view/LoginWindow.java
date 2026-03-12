@@ -1,12 +1,12 @@
 package src.view;
 
 import javax.swing.*;
-
-import src.service.UserService;
-
 import java.awt.event.*;
 import java.awt.*;
 import java.util.Arrays;
+import src.service.UserService;
+import src.session.*;;
+
 
 public class LoginWindow extends JFrame implements ActionListener {
     // Attributes
@@ -15,7 +15,6 @@ public class LoginWindow extends JFrame implements ActionListener {
     private JLabel logoLabel, titleLabel, loginIdentifierLabel, passwordLabel, footerLabel;
     private JButton button1, button2;
     private String loginIdentifier;
-    private char[] rawPassword;
     private UserService userService;
 
     // Constructor
@@ -136,6 +135,15 @@ public class LoginWindow extends JFrame implements ActionListener {
         this.dispose();
     }
 
+    private void goToDashboardWindow() {
+        DashboardWindow dashboard = new DashboardWindow();
+        dashboard.setBounds(0, 0, 900, 600);
+        dashboard.setVisible(true);
+        dashboard.setResizable(true);
+        dashboard.setLocationRelativeTo(null);
+        this.dispose();
+    }
+
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() != this.button1 && e.getSource() != this.button2) {
             JOptionPane.showMessageDialog(null, "FATAL ERROR!");
@@ -144,23 +152,24 @@ public class LoginWindow extends JFrame implements ActionListener {
 
         if (e.getSource() == this.button1) {
 
+            char [] rawPassword = this.passwordField.getPassword();;
             this.loginIdentifier = this.textField.getText().trim();
-            this.rawPassword = this.passwordField.getPassword();
 
-            if (this.loginIdentifier.isEmpty() || this.rawPassword.length == 0) {
+            if (this.loginIdentifier.isEmpty() || rawPassword.length == 0) {
                 JOptionPane.showMessageDialog(null, "Please fill in all fields.");
-                Arrays.fill(this.rawPassword, '\0');
+                Arrays.fill(rawPassword, '\0');
                 return;
             }
 
             if (!this.userService.login(loginIdentifier, rawPassword)) {
                 JOptionPane.showMessageDialog(null, "Error: user not found or invalid password.");
-                Arrays.fill(this.rawPassword, '\0');
+                Arrays.fill(rawPassword, '\0');
                 return;
             }
 
             JOptionPane.showMessageDialog(null, String.format("Welcome %s", this.loginIdentifier));
-            Arrays.fill(this.rawPassword, '\0');
+            Arrays.fill(rawPassword, '\0');
+            this.goToDashboardWindow();
             return;
         }
 
