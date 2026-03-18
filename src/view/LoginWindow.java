@@ -5,15 +5,13 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.Arrays;
 import src.service.UserService;
-import src.session.*;;
-
 
 public class LoginWindow extends JFrame implements ActionListener {
     // Attributes
     private JTextField textField;
     private JPasswordField passwordField;
     private JLabel logoLabel, titleLabel, loginIdentifierLabel, passwordLabel, footerLabel;
-    private JButton button1, button2;
+    private JButton loginButton, registerButton;
     private String loginIdentifier;
     private UserService userService;
 
@@ -31,35 +29,29 @@ public class LoginWindow extends JFrame implements ActionListener {
         // Form panel — contains all form elements
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(UITheme.BACKGROUND);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
+        Insets defaultInsets = new Insets(5, 10, 5, 10);
+        Insets firstButtonInsets = new Insets(20, 10, 5, 10);
 
         // Logo — fixed in NORTH, centered
         this.logoLabel = new JLabel(UITheme.LOGO_ICON);
         this.logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
-        formPanel.add(this.logoLabel, gbc);
+        formPanel.add(this.logoLabel,
+                UITheme.gbc(0, 0, GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 1.0, 0.0,
+                        defaultInsets));
 
         this.titleLabel = new JLabel("LOGIN");
         this.titleLabel.setFont(UITheme.FONT_TITLE);
         this.titleLabel.setForeground(UITheme.FONT_COLOR);
         this.titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.CENTER;
-        formPanel.add(this.titleLabel, gbc);
+        formPanel.add(this.titleLabel,
+                UITheme.gbc(0, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.CENTER, 1, 1.0, 0.0,
+                        defaultInsets));
 
         this.loginIdentifierLabel = new JLabel("Username or Email:");
         this.loginIdentifierLabel.setFont(UITheme.FONT_NORMAL);
         this.loginIdentifierLabel.setForeground(UITheme.FONT_COLOR);
-        gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
-        formPanel.add(this.loginIdentifierLabel, gbc);
+        formPanel.add(this.loginIdentifierLabel,
+                UITheme.gbc(0, 2, GridBagConstraints.NONE, GridBagConstraints.WEST, 1, 0.0, 0.0, defaultInsets));
 
         this.textField = new JTextField();
         this.textField.setPreferredSize(new Dimension(255, 25));
@@ -67,17 +59,14 @@ public class LoginWindow extends JFrame implements ActionListener {
         this.textField.setBorder(UITheme.INPUT_BORDER);
         this.textField.setFont(UITheme.FONT_INPUT);
         this.textField.setForeground(UITheme.FONT_COLOR);
-        gbc.gridy = 3;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        formPanel.add(this.textField, gbc);
+        formPanel.add(this.textField,
+                UITheme.gbc(0, 3, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1.0, 0.0, defaultInsets));
 
         this.passwordLabel = new JLabel("Password:");
         this.passwordLabel.setFont(UITheme.FONT_NORMAL);
         this.passwordLabel.setForeground(UITheme.FONT_COLOR);
-        gbc.gridy = 4;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.WEST;
-        formPanel.add(this.passwordLabel, gbc);
+        formPanel.add(this.passwordLabel,
+                UITheme.gbc(0, 4, GridBagConstraints.NONE, GridBagConstraints.WEST, 1, 0.0, 0.0, defaultInsets));
 
         this.passwordField = new JPasswordField();
         this.passwordField.setPreferredSize(new Dimension(255, 25));
@@ -85,37 +74,30 @@ public class LoginWindow extends JFrame implements ActionListener {
         this.passwordField.setBorder(UITheme.INPUT_BORDER);
         this.passwordField.setFont(UITheme.FONT_INPUT);
         this.passwordField.setForeground(UITheme.FONT_COLOR);
-        gbc.gridy = 5;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        formPanel.add(this.passwordField, gbc);
+        formPanel.add(this.passwordField,
+                UITheme.gbc(0, 5, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1.0, 0.0, defaultInsets));
 
-        this.button1 = new JButton("Login");
-        this.button1.setBackground(UITheme.BUTTON_COLOR);
-        this.button1.setFont(UITheme.FONT_INPUT);
-        this.button1.setForeground(UITheme.BUTTON_FONT);
-        this.button1.addActionListener(this);
-        gbc.gridy = 6;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(20, 10, 5, 10);
-        formPanel.add(this.button1, gbc);
+        this.loginButton = new JButton("Login");
+        this.loginButton.setBackground(UITheme.BUTTON_COLOR);
+        this.loginButton.setFont(UITheme.FONT_INPUT);
+        this.loginButton.setForeground(UITheme.BUTTON_FONT);
+        this.loginButton.addActionListener(this);
+        formPanel.add(this.loginButton,
+                UITheme.gbc(0, 6, GridBagConstraints.NONE, GridBagConstraints.CENTER, 1, 0.0, 0.0, firstButtonInsets));
 
         this.footerLabel = new JLabel("Don't have an account?");
         this.footerLabel.setFont(UITheme.FONT_ITALIC);
         this.footerLabel.setForeground(UITheme.FONT_COLOR);
-        gbc.gridy = 7;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.CENTER;
-        formPanel.add(this.footerLabel, gbc);
+        formPanel.add(this.footerLabel,
+                UITheme.gbc(0, 7, GridBagConstraints.NONE, GridBagConstraints.CENTER, 1, 0.0, 0.0, defaultInsets));
 
-        this.button2 = new JButton("Register Now");
-        this.button2.setBackground(UITheme.BUTTON_COLOR);
-        this.button2.setFont(UITheme.FONT_INPUT);
-        this.button2.setForeground(UITheme.BUTTON_FONT);
-        this.button2.addActionListener(this);
-        gbc.gridy = 8;
-        gbc.insets = new Insets(5, 10, 5, 10);
-        formPanel.add(this.button2, gbc);
+        this.registerButton = new JButton("Register Now");
+        this.registerButton.setBackground(UITheme.BUTTON_COLOR);
+        this.registerButton.setFont(UITheme.FONT_INPUT);
+        this.registerButton.setForeground(UITheme.BUTTON_FONT);
+        this.registerButton.addActionListener(this);
+        formPanel.add(this.registerButton,
+                UITheme.gbc(0, 8, GridBagConstraints.NONE, GridBagConstraints.CENTER, 1, 0.0, 0.0, defaultInsets));
 
         // centerWrapper: GridBagLayout with no weights → keeps formPanel at its
         // preferred size and centers it regardless of window size
@@ -145,14 +127,15 @@ public class LoginWindow extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() != this.button1 && e.getSource() != this.button2) {
+        if (e.getSource() != this.loginButton && e.getSource() != this.registerButton) {
             JOptionPane.showMessageDialog(null, "FATAL ERROR!");
             return;
         }
 
-        if (e.getSource() == this.button1) {
+        if (e.getSource() == this.loginButton) {
 
-            char [] rawPassword = this.passwordField.getPassword();;
+            char[] rawPassword = this.passwordField.getPassword();
+            ;
             this.loginIdentifier = this.textField.getText().trim();
 
             if (this.loginIdentifier.isEmpty() || rawPassword.length == 0) {
@@ -169,11 +152,12 @@ public class LoginWindow extends JFrame implements ActionListener {
 
             JOptionPane.showMessageDialog(null, String.format("Welcome %s", this.loginIdentifier));
             Arrays.fill(rawPassword, '\0');
+
             this.goToDashboardWindow();
             return;
         }
 
-        if (e.getSource() == this.button2) {
+        if (e.getSource() == this.registerButton) {
             this.goToRegisterWindow();
             return;
         }

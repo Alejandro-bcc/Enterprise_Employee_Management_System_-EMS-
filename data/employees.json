@@ -1,0 +1,16 @@
+{
+  "nextId": 2,
+  "employees": [
+    {
+      "id": 1,
+      "firstName": "Alejandro",
+      "lastName": "Nava",
+      "email": "alejandro@gmail.com",
+      "phone": "41984080402",
+      "department": "IT",
+      "hireDate": "2026-04-01",
+      "salary": 1800.0,
+      "role": "Intern"
+    }
+  ]
+}

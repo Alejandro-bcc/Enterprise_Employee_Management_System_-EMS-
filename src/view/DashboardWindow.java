@@ -1,6 +1,8 @@
 package src.view;
 
 import javax.swing.*;
+
+import src.service.UserService;
 import src.session.Session;
 import java.awt.*;
 import java.awt.event.*;
@@ -10,11 +12,18 @@ public class DashboardWindow extends JFrame implements ActionListener {
     private JLabel titleLabel, userLoggedLabel, searchLabel;
     private JTextField searchField;
     private JComboBox<String> deptCombo, roleCombo;
-    private JButton addButton;
+    private JButton addButton, logoutButton;
     private EmployeeListPanel listPanel;
+    private UserService userService;
 
     // Constructor
     public DashboardWindow() {
+
+        ImageIcon raw = new ImageIcon(UITheme.class.getResource("/assets/img/logoutIcon.png"));
+        Image scaled = raw.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ImageIcon logoutIcon = new ImageIcon(scaled);
+
+        this.userService = new UserService();
 
         this.setLayout(new GridBagLayout());
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -24,28 +33,33 @@ public class DashboardWindow extends JFrame implements ActionListener {
 
         JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setBackground(UITheme.BACKGROUND);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 10, 5, 10);
+        Insets rowInsets = new Insets(5, 10, 5, 10);
+        Insets toolbarInsets = new Insets(10, 10, 0, 10);
+        Insets listInsets = new Insets(5, 10, 0, 10);
 
         this.titleLabel = new JLabel("Employee Management System");
         this.titleLabel.setFont(UITheme.FONT_TITLE);
         this.titleLabel.setForeground(UITheme.FONT_COLOR);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-        formPanel.add(this.titleLabel, gbc);
+        formPanel.add(this.titleLabel,
+                UITheme.gbc(0, 0, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 1, 1.0, 0.0, rowInsets));
 
         this.userLoggedLabel = new JLabel("@" + Session.getInstance().getCurrentUser().getUsername());
         this.userLoggedLabel.setFont(UITheme.FONT_TITLE);
         this.userLoggedLabel.setForeground(UITheme.FONT_COLOR);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.weightx = 0;
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.EAST;
-        formPanel.add(this.userLoggedLabel, gbc);
+        formPanel.add(this.userLoggedLabel,
+                UITheme.gbc(1, 0, GridBagConstraints.NONE, GridBagConstraints.EAST, 1, 0.0, 0.0, rowInsets));
+
+        this.logoutButton = new JButton(logoutIcon);
+        this.logoutButton.setToolTipText("Logout");
+        this.logoutButton.setBorder(BorderFactory.createEmptyBorder());
+        this.logoutButton.setContentAreaFilled(false);
+        this.logoutButton.setFocusPainted(false);
+        this.logoutButton.setOpaque(false);
+        this.logoutButton.setMargin(new Insets(0, 0, 0, 0));
+        this.logoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        this.logoutButton.addActionListener(this);
+        formPanel.add(this.logoutButton,
+                UITheme.gbc(2, 0, GridBagConstraints.NONE, GridBagConstraints.EAST, 1, 0.0, 0.0, rowInsets));
 
         JPanel toolbarPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
         toolbarPanel.setBackground(UITheme.BACKGROUND);
@@ -84,24 +98,12 @@ public class DashboardWindow extends JFrame implements ActionListener {
         toolbarPanel.add(this.roleCombo);
         toolbarPanel.add(this.addButton);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 2;
-        gbc.weightx = 1.0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(10, 10, 0, 10);
-        formPanel.add(toolbarPanel, gbc);
+        formPanel.add(toolbarPanel,
+                UITheme.gbc(0, 1, GridBagConstraints.HORIZONTAL, GridBagConstraints.WEST, 3, 1.0, 0.0, toolbarInsets));
 
         this.listPanel = new EmployeeListPanel();
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.insets = new Insets(5, 10, 0, 10);
-        formPanel.add(this.listPanel, gbc);
+        formPanel.add(this.listPanel,
+                UITheme.gbc(0, 2, GridBagConstraints.BOTH, GridBagConstraints.WEST, 3, 1.0, 1.0, listInsets));
 
         KeyAdapter onType = new KeyAdapter() {
             public void keyReleased(KeyEvent e) {
@@ -128,20 +130,36 @@ public class DashboardWindow extends JFrame implements ActionListener {
                 (String) this.roleCombo.getSelectedItem());
     }
 
-    private void openFormPanel() {
+    private void goToFormPanel() {
         EmployeeFormPanel formPanel = new EmployeeFormPanel();
-        formPanel.setBounds(0, 0, 450, 600);
+        formPanel.setBounds(0, 0, 900, 600);
         formPanel.setVisible(true);
         formPanel.setResizable(true);
         formPanel.setLocationRelativeTo(null);
+        this.dispose();
+    }
+
+    private void goToLoginWindow() {
+        LoginWindow login = new LoginWindow();
+        login.setBounds(0, 0, 350, 470);
+        login.setVisible(true);
+        login.setResizable(true);
+        login.setLocationRelativeTo(null);
+        this.dispose();
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() != this.addButton)
+        if (e.getSource() != this.addButton && e.getSource() != this.logoutButton)
             return;
 
         if (e.getSource() == this.addButton) {
-            openFormPanel();
+            goToFormPanel();
+            return;
+        }
+
+        if (e.getSource() == this.logoutButton) {
+            this.userService.logout();
+            goToLoginWindow();
             return;
         }
     }

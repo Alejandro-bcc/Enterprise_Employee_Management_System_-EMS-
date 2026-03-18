@@ -15,12 +15,14 @@ public class UserDAO {
     // Methods
     public void add(User u) {
         this.repository.getUsers().put(u.getUsername(), u);
+        this.repository.save();
     }
 
     public boolean remove(String username) {
         if (!this.repository.getUsers().containsKey(username))
             return false;
         this.repository.getUsers().remove(username);
+        this.repository.save();
         return true;
     }
 

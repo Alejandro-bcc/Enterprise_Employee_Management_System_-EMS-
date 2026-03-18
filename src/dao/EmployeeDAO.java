@@ -16,10 +16,15 @@ public class EmployeeDAO {
     // Methods
     public void add(Employee e) {
         this.repository.getEmployees().add(e);
+        this.repository.save();
     }
 
     public boolean remove(int id) {
-        return this.repository.getEmployees().removeIf(e -> e.getId() == id);
+        boolean removed = this.repository.getEmployees().removeIf(e -> e.getId() == id);
+        if(removed){
+            this.repository.save();
+        }
+        return removed;
     }
 
     public Employee findById(int id) {
@@ -93,6 +98,7 @@ public class EmployeeDAO {
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).getId() == updated.getId()) {
                 list.set(i, updated);
+                this.repository.save();
                 return true;
             }
         }

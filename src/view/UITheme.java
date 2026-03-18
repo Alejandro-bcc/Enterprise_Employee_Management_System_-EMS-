@@ -22,6 +22,7 @@ public class UITheme {
 
     // Borders
     public static final Border INPUT_BORDER = BorderFactory.createLineBorder(BORDER_COLOR);
+    public static final Border FORMBORDER = BorderFactory.createEmptyBorder(20, 20, 20, 20);
 
     // Images — loaded once via static initializer
     public static final ImageIcon LOGO_ICON;
@@ -34,5 +35,39 @@ public class UITheme {
         WINDOW_ICON = new ImageIcon(UITheme.class.getResource("/assets/img/EMS_logo_icon_48x48.png"));
     }
 
-    private UITheme() {}
+    private UITheme() {
+    }
+
+    // Methods
+
+    public static GridBagConstraints gbc(
+            int x,
+            int y,
+            int fill,
+            int anchor,
+            int gridwidth,
+            double weightx) {
+        return gbc(x, y, fill, anchor, gridwidth, weightx, 0.0, new Insets(6, 10, 6, 10));
+    }
+
+    public static GridBagConstraints gbc(
+            int x,
+            int y,
+            int fill,
+            int anchor,
+            int gridwidth,
+            double weightx,
+            double weighty,
+            Insets insets) {
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridx = x;
+        c.gridy = y;
+        c.fill = fill;
+        c.anchor = anchor;
+        c.gridwidth = gridwidth;
+        c.weightx = weightx;
+        c.weighty = weighty;
+        c.insets = insets != null ? insets : new Insets(6, 10, 6, 10);
+        return c;
+    }
 }
