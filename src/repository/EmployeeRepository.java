@@ -11,7 +11,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import src.model.Developer;
 import src.model.Employee;
 import src.model.Intern;
@@ -43,7 +45,9 @@ public class EmployeeRepository {
     }
 
     public synchronized int generateId() {
-        return this.nextId++;
+        int id = this.nextAvailableId();
+        this.nextId = id + 1;
+        return id;
     }
 
     public synchronized void save() {
@@ -51,6 +55,7 @@ public class EmployeeRepository {
             Files.createDirectories(DATA_FILE.getParent());
 
             EmployeeStore store = new EmployeeStore();
+            this.nextId = this.nextAvailableId();
             store.nextId = this.nextId;
             for (Employee e : this.employees) {
                 store.employees.add(EmployeeRecord.fromEmployee(e));
@@ -85,20 +90,25 @@ public class EmployeeRepository {
                 }
             }
 
-            int maxId = 0;
-            for (Employee e : this.employees) {
-                if (e.getId() > maxId) {
-                    maxId = e.getId();
-                }
-            }
-
-            this.nextId = Math.max(store.nextId, maxId + 1);
-            if (this.nextId < 1) {
-                this.nextId = 1;
-            }
+            this.nextId = this.nextAvailableId();
         } catch (Exception ex) {
             throw new RuntimeException("Could not load employees.json", ex);
         }
+    }
+
+    private int nextAvailableId() {
+        Set<Integer> usedIds = new HashSet<>();
+        for (Employee employee : this.employees) {
+            if (employee.getId() > 0) {
+                usedIds.add(employee.getId());
+            }
+        }
+
+        int candidate = 1;
+        while (usedIds.contains(candidate)) {
+            candidate++;
+        }
+        return candidate;
     }
 
     private static class EmployeeStore {

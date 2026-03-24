@@ -5,6 +5,7 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.Arrays;
 import src.service.UserService;
+import src.session.Session;
 
 public class LoginWindow extends JFrame implements ActionListener {
     // Attributes
@@ -150,7 +151,10 @@ public class LoginWindow extends JFrame implements ActionListener {
                 return;
             }
 
-            JOptionPane.showMessageDialog(null, String.format("Welcome %s", this.loginIdentifier));
+                String username = Session.getInstance().getCurrentUser() != null
+                    ? Session.getInstance().getCurrentUser().getUsername()
+                    : this.loginIdentifier;
+                JOptionPane.showMessageDialog(null, String.format("Welcome %s", username));
             Arrays.fill(rawPassword, '\0');
 
             this.goToDashboardWindow();

@@ -22,10 +22,15 @@ public class EmployeeFormPanel extends JFrame implements ActionListener {
     private JComboBox<String> deptCombo, roleCombo;
     private JButton submitButton, cancelButton;
     private EmployeeService employeeService;
+        private Integer editingEmployeeId;
 
     // Constructor
 
-    public EmployeeFormPanel() {
+        public EmployeeFormPanel() {
+                this(null);
+        }
+
+        public EmployeeFormPanel(Employee employeeToEdit) {
 
         this.employeeService = new EmployeeService();
 
@@ -194,9 +199,28 @@ public class EmployeeFormPanel extends JFrame implements ActionListener {
         centerWrapper.setBackground(UITheme.BACKGROUND);
         centerWrapper.add(formPanel);
         this.add(centerWrapper);
+
+                this.editingEmployeeId = null;
+                if (employeeToEdit != null) {
+                        this.editingEmployeeId = employeeToEdit.getId();
+                        this.titleLabel.setText("Edit Employee");
+                        this.submitButton.setText("Update");
+                        populateFields(employeeToEdit);
+                }
     }
 
     // Methods
+
+        private void populateFields(Employee employee) {
+                this.firstNameField.setText(employee.getFirstName());
+                this.lastNameField.setText(employee.getLastName());
+                this.emailField.setText(employee.getEmail());
+                this.phoneField.setText(employee.getPhone());
+                this.deptCombo.setSelectedItem(employee.getDepartment());
+                this.roleCombo.setSelectedItem(employee.getRole());
+                this.hireDateField.setText(String.valueOf(employee.getHireDate()));
+                this.salaryField.setText(String.valueOf(employee.getSalary()));
+        }
 
     private void goToDashboardWindow() {
         DashboardWindow dashboard = new DashboardWindow();
@@ -258,7 +282,9 @@ public class EmployeeFormPanel extends JFrame implements ActionListener {
                 return;
             }
 
-            int id = EmployeeRepository.getInstance().generateId();
+            int id = this.editingEmployeeId == null
+                    ? EmployeeRepository.getInstance().generateId()
+                    : this.editingEmployeeId;
 
             Employee newEmployee;
 
@@ -278,12 +304,21 @@ public class EmployeeFormPanel extends JFrame implements ActionListener {
                     break;
             }
 
-            if(!this.employeeService.add(newEmployee)){
-                JOptionPane.showMessageDialog(this, "Could not add employee.");
+                        boolean success;
+                        if (this.editingEmployeeId == null) {
+                                success = this.employeeService.add(newEmployee);
+                        } else {
+                                success = this.employeeService.update(newEmployee);
+                        }
+
+                        if (!success) {
+                                JOptionPane.showMessageDialog(this,
+                                                this.editingEmployeeId == null ? "Could not add employee." : "Could not update employee.");
                 return;
             }
 
-            JOptionPane.showMessageDialog(this, "Employee added successfully.");
+                        JOptionPane.showMessageDialog(this,
+                                        this.editingEmployeeId == null ? "Employee added successfully." : "Employee updated successfully.");
             goToDashboardWindow();
             return;
         }
