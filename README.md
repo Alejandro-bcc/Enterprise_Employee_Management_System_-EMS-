@@ -12,7 +12,7 @@ Este projeto foi construído para demonstrar habilidades técnicas relevantes pa
 
 ## Preview
 
-Interface com autenticação, dashboard e gerenciamento completo de funcionários (cadastro, listagem e atualização) em aplicação desktop.
+![App Gif](assets/gifs/app.gif)
 
 ## Principais funcionalidades
 
