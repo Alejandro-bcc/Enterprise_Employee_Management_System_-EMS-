@@ -65,8 +65,8 @@ EMS/
 ## Como executar
 
 ```bash
-git clone https://github.com/seu-usuario/Enterprise_Employee_Management_System_-EMS-.git
-cd Enterprise_Employee_Management_System_-EMS-
+git clone https://github.com/seu-usuario/EMS.git
+cd EMS
 chmod +x run.sh
 ./run.sh
 ```
